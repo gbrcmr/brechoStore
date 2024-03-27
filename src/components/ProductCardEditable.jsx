@@ -26,8 +26,8 @@ const handleCart = () => {
 const ProductCardEditable = ({ name, img, description, types }) => {
 
     return (
-        <Card maxW={340} bg={'#00a8ff'} >
-            <Text bg={'#b28bc0'} align={'center'} fontSize={'large'} fontWeight={700}>
+        <Card maxW={340} bg={'#2de2e6'} >
+            <Text bg={'#9700cc'} align={'center'} fontSize={'large'} fontWeight={700}>
                 {name}
             </Text>
             <Divider />
@@ -45,7 +45,7 @@ const ProductCardEditable = ({ name, img, description, types }) => {
                 </Stack>
             </CardBody>
             <Divider />
-            <CardFooter bg={'white'}>
+            <CardFooter bg={'#f6019d'}>
                 <Text>
                     {types}
                 </Text>
