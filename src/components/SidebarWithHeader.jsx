@@ -45,7 +45,7 @@ const SidebarContent = ({ onClose, ...rest }) => {
   return (
     <Box
       transition="3s ease"
-      bg={'#f195ac'}
+      bg={'#f6019d'}
       borderRight="1px"
       borderRightColor={'#0266c8'}
       w={{ base: 'full', md: 60 }}
@@ -119,7 +119,7 @@ const MobileNav = ({ onOpen, ...rest }) => {
       px={{ base: 4, md: 4 }}
       height="20"
       alignItems="center"
-      bg={'#f195ac'}
+      bg={'#f6019d'}
       borderBottomWidth="1px"
       borderBottomColor={useColorModeValue('gray.200', 'gray.700')}
       justifyContent={{ base: 'space-between', md: 'flex-end' }}

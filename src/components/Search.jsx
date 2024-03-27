@@ -10,7 +10,7 @@ export const Search = () => {
         placeholder='Busque o seu produto...'
       />
       <InputRightElement>
-        <IconButton aria-label='Search database' bg='green' icon={<SearchIcon />} />
+        <IconButton aria-label='Search database' bg='#2de2e6' icon={<SearchIcon />} />
       </InputRightElement>
     </InputGroup>
   )
