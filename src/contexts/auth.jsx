@@ -1,4 +1,6 @@
 import { createContext, useEffect, useState } from "react";
+import { v4 as uuidv4 } from 'uuid';
+import api from "../services/api";
 
 export const AuthContext = createContext({});
 
@@ -21,26 +23,14 @@ export const AuthProvider = ({ children }) => {
         }
     }, []);
 
-    const signIn = (email, password) => {
-        const usersStorage = JSON.parse(localStorage.getItem("users_db"));
-
-        const hasUser = usersStorage?.filter((user) => user.email === email)
-
-        if (hasUser?.length) {
-            if (hasUser[0].email === email && hasUser[0].password === password) {
-                const token = Math.random().toString(36).substring(2);
-                localStorage.setItem("user_token", JSON.stringify({ email, token }));
-                setUser({ email, password })
-                return;
-            } else {
-                return "E-mail ou senha incorretos"
-            }
-        } else {
-            return "Usuário não cadastrado";
-        }
+    const signIn = async (email, password) => {
+        return await api.post('login', {
+            email: email,
+            senha: password
+        });
     };
 
-    const signUp = (email, password) => {
+    const signUp = async (email, password) => {
         const usersStorage = JSON.parse(localStorage.getItem("users_db"));
 
         const hasUser = usersStorage?.filter((user) => user.email === email)
@@ -49,7 +39,7 @@ export const AuthProvider = ({ children }) => {
             return "Esse email já está cadastrado"
         }
 
-        let newUser;
+        let uuid = uuidv4();
 
         if (usersStorage) {
             newUser = [...usersStorage, { email, password }];
@@ -57,9 +47,10 @@ export const AuthProvider = ({ children }) => {
             newUser = [{ email, password }]
         }
 
-        localStorage.setItem("users_db", JSON.stringify(newUser));
+        console.log(JSON.stringify(newUser));
 
-        return;
+
+        return await axios.store("/cadaster", email, password);
     }
 
     const signOut = () => {

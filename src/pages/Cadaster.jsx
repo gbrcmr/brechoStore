@@ -19,8 +19,10 @@ import {
   InputGroup,
 } from '@chakra-ui/react';
 import { HiEye, HiEyeOff } from 'react-icons/hi';
-import useAuth from '../hooks/useAuth';
+//import useAuth from '../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
+import api from '../services/api';
 
 export const Cadaster = () => {
   const { isOpen, onToggle } = useDisclosure();
@@ -36,7 +38,6 @@ export const Cadaster = () => {
   const [passwordError, setPasswordError] = useState('');
   const [error, setError] = useState('');
 
-  const { signUp } = useAuth();
 
   const onClickReveal = () => {
     onToggle();
@@ -48,7 +49,22 @@ export const Cadaster = () => {
     return emailRegex.test(email);
   };
 
+  const signUp = async () => {
+    const userId = uuidv4()
+
+    return await api.post('cadaster', {
+      userid: userId,
+      nome: name,
+      email: email,
+      telefone: phone,
+      senha: password
+    });
+
+
+  }
+
   const handleSignUp = () => {
+
     // Reset errors
     setError('');
     setNameError('');
@@ -82,16 +98,19 @@ export const Cadaster = () => {
       return;
     }
 
+    console.log('passou aqui')
     // Call signUp function
-    const res = signUp(email, password);
+    try {
+      // Chama signUp e aguarda a Promise ser resolvida
+      const res = signUp();
+      console.log(res)
 
-    if (res) {
-      setError(res);
-      return;
+
+      alert('Usuário cadastrado com sucesso');
+      navigate('/login');
+    } catch (error) {
+      // Em caso de erro, trata o erro e define no esta
     }
-
-    alert('Usuário cadastrado com sucesso');
-    navigate('/login');
   };
 
   return (

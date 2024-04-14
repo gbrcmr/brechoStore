@@ -36,7 +36,7 @@ export const Login = () => {
     onToggle();
   };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     // Reset errors
     setEmailError('');
     setPasswordError('');
@@ -51,16 +51,17 @@ export const Login = () => {
       return;
     }
 
-    const res = signIn(email, password);
-
-    if (res) {
+    try {
+      await signIn(email, password);
+      alert(`bem-vindo!`)
+      navigate('/');
+    } catch (error) {
       // Set error returned from signIn function
+      console.log(email);
+      console.log(password);
       setEmailError('email ou senha incorretos');
       setPasswordError('email ou senha incorretos');
-      return;
     }
-
-    navigate('/');
   };
 
   return (
