@@ -20,8 +20,7 @@ import useAuth from '../hooks/useAuth'
 
 
 export const Profile = () => {
-    const { user } = useAuth()
-    console.log('..............', user)
+    const user = JSON.parse(localStorage.getItem('user_token'));
     return (
         < SidebarWithHeader >
             <Container
@@ -80,7 +79,7 @@ export const Profile = () => {
                             <Stack spacing="5">
                                 <FormControl>
                                     <FormLabel htmlFor="name">Nome completo</FormLabel>
-                                    <Input id="name" type="name" disabled={true} placeholder={'Gabriel Camargo'}></Input>
+                                    <Input id="name" type="name" disabled={true} placeholder={`${user.nome}`}></Input>
                                 </FormControl>
                                 <FormControl>
                                     <FormLabel htmlFor="cpf">CPF</FormLabel>
@@ -95,7 +94,7 @@ export const Profile = () => {
                                 <FormControl>
                                     <FormLabel htmlFor="phone">Telefone</FormLabel>
                                     <NumberInput>
-                                        <NumberInputField id="phone" type="phone" disabled={true} placeholder={'(54) 99999-9999'} />
+                                        <NumberInputField id="phone" type="phone" disabled={true} placeholder={`${user.telefone}`} />
                                     </NumberInput>
                                 </FormControl>
                             </Stack>

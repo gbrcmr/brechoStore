@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { Search } from "../components/Search"
 import SidebarWithHeader from "../components/SidebarWithHeader"
 import {
@@ -15,10 +16,75 @@ import {
   NumberInputField,
   Stack,
   Text,
+  FormErrorMessage
 } from '@chakra-ui/react'
+import { useNavigate } from 'react-router-dom';
+import useAuth from '../hooks/useAuth';
 
 
 export const StoreCadaster = () => {
+  const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem('user_token'));
+
+  const [nameStore, setNameStore] = useState('');
+  const [emailStore, setEmailStore] = useState('');
+  const [instagram, setInstagram] = useState('');
+  const [phoneStore, setPhoneStore] = useState('');
+  const [nameError, setNameError] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [phoneError, setPhoneError] = useState('');
+  const [instagramError, setInstagramError] = useState('');
+  const [error, setError] = useState('');
+  const { createStore } = useAuth();
+
+  const isEmailValid = (emailStore) => {
+    // Regex for emailStore validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(emailStore);
+  };
+
+  const handleStoreCadaster = async () => {
+
+    // Reset errors
+    setError('');
+    setNameError('');
+    setEmailError('');
+    setPhoneError('');
+    setInstagramError('');
+
+    // Basic validation
+    if (!nameStore) {
+      setNameError('Nome é obrigatório.');
+      return;
+    }
+
+    if (!emailStore) {
+      setEmailError('emailStore é obrigatório.');
+      return;
+    }
+
+    if (!isEmailValid(emailStore)) {
+      setEmailError('Formato de emailStore inválido.');
+      return;
+    }
+
+    if (!phoneStore) {
+      setPhoneError('Telefone é obrigatório.');
+      return;
+    }
+
+
+    try {
+      await createStore(nameStore, emailStore, phoneStore, instagram);
+      alert(`bem-vindo!`)
+      navigate('/');
+    } catch (error) {
+
+      console.log("deu ruim", error);
+
+    }
+  };
+
   return (
     <SidebarWithHeader>
       <Container
@@ -75,28 +141,69 @@ export const StoreCadaster = () => {
           >
             <Stack spacing="6">
               <Stack spacing="5">
-                <FormControl>
-                  <FormLabel color={'white'} htmlFor="name">Nome da loja</FormLabel>
-                  <Input id="name" type="name" />
+                <FormControl isInvalid={nameError}>
+                  <FormLabel color={'white'} htmlFor="nameStore">Nome da loja</FormLabel>
+                  <Input
+                    id="nameStore"
+                    type="nameStore"
+                    value={nameStore}
+                    onChange={(e) => {
+                      setNameStore(e.target.value);
+                      setNameError('');
+                    }}
+                  />
+                  <FormErrorMessage>{nameError}</FormErrorMessage>
                 </FormControl>
-                <FormControl>
-                  <FormLabel color={'white'} htmlFor="email">Email da loja</FormLabel>
-                  <Input id="email" type="email" />
+                <FormControl isInvalid={emailError}>
+                  <FormLabel color={'white'} htmlFor="emailStore">email da loja</FormLabel>
+                  <Input
+                    id="emailStore"
+                    type="emailStore"
+                    value={emailStore}
+                    onChange={(e) => {
+                      setEmailStore(e.target.value);
+                      setEmailError('');
+                    }}
+                  />
+                  <FormErrorMessage>{emailError}</FormErrorMessage>
                 </FormControl>
-                <FormControl>
-                  <FormLabel color={'white'} htmlFor="phone">Telefone</FormLabel>
+                <FormControl isInvalid={phoneError}>
+                  <FormLabel color={'white'} htmlFor="phoneStore">Telefone</FormLabel>
                   <NumberInput>
-                    <NumberInputField color={'white'} id="phone" type="phone" />
+                    <NumberInputField
+                      id="phoneStore"
+                      type="phoneStore"
+                      value={phoneStore}
+                      onChange={(e) => {
+                        setPhoneStore(e.target.value);
+                        setPhoneError('');
+                      }}
+                    />
                   </NumberInput>
+                  <FormErrorMessage>{phoneError}</FormErrorMessage>
                 </FormControl>
-                <FormControl>
-                  <FormLabel color={'white'} htmlFor="email">Instagram</FormLabel>
-                  <Input id="email" type="email" />
+                <FormControl isInvalid={instagramError}>
+                  <FormLabel color={'white'} htmlFor="instagram">Instagram</FormLabel>
+                  <Input
+                    id="instagram"
+                    type="instagram"
+                    value={instagram}
+                    onChange={(e) => {
+                      setInstagram(e.target.value);
+                      setInstagramError('');
+                    }}
+                  />
+                  <FormErrorMessage>{instagramError}</FormErrorMessage>
                 </FormControl>
               </Stack>
-              <Stack spacing="6">
-                <Button backgroundColor={'#0266c8'} color={'white'}>Cadastrar</Button>
-              </Stack>
+              <Button backgroundColor={'#b28bc0'} color={'white'} onClick={handleStoreCadaster}>
+                Cadastrar
+              </Button>
+              {error && (
+                <Text color="red.500" textAlign="center">
+                  {error}
+                </Text>
+              )}
             </Stack>
           </Box>
         </Stack>

@@ -22,7 +22,8 @@ import { HiEye, HiEyeOff } from 'react-icons/hi';
 //import useAuth from '../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
-import api from '../services/api';
+import api from '../services/api'
+import useAuth from '../hooks/useAuth';
 
 export const Cadaster = () => {
   const { isOpen, onToggle } = useDisclosure();
@@ -37,6 +38,7 @@ export const Cadaster = () => {
   const [phoneError, setPhoneError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [error, setError] = useState('');
+  const { signUp } = useAuth();
 
 
   const onClickReveal = () => {
@@ -49,21 +51,7 @@ export const Cadaster = () => {
     return emailRegex.test(email);
   };
 
-  const signUp = async () => {
-    const userId = uuidv4()
-
-    return await api.post('cadaster', {
-      userid: userId,
-      nome: name,
-      email: email,
-      telefone: phone,
-      senha: password
-    });
-
-
-  }
-
-  const handleSignUp = () => {
+  const handleSignUp = async () => {
 
     // Reset errors
     setError('');
@@ -101,15 +89,13 @@ export const Cadaster = () => {
     console.log('passou aqui')
     // Call signUp function
     try {
-      // Chama signUp e aguarda a Promise ser resolvida
-      const res = signUp();
-      console.log(res)
-
-
-      alert('Usuário cadastrado com sucesso');
+      await signUp(name, email, password, phone);
+      alert(`Conta criada!`)
       navigate('/login');
     } catch (error) {
-      // Em caso de erro, trata o erro e define no esta
+      // Set error returned from signIn function
+      console.log("deu ruim", error);
+
     }
   };
 

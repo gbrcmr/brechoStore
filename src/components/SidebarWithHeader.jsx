@@ -36,7 +36,7 @@ import { Search } from './Search'
 const LinkItems = [
   { name: 'Home', icon: FiHome, route: '/' },
   { name: 'Perfil', icon: FiSettings, route: '/Profile' },
-  { name: 'Minha loja', icon: FiCompass, route: '/store/cadaster' },
+  { name: 'Minha loja', icon: FiCompass, route: '/store' },
   { name: 'Meus pedidos', icon: FiTrendingUp, route: '/orders' },
   { name: 'Favoritos', icon: FiHeart, route: '/favorites' },
 ]

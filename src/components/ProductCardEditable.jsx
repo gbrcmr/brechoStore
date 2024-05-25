@@ -33,6 +33,7 @@ const ProductCardEditable = ({ name, img, description, types }) => {
             <Divider />
             <CardBody align={'center'}>
                 <Image
+                    resize={'cover'}
                     src={img}
                     borderRadius='lg'
                     maxH={225}
