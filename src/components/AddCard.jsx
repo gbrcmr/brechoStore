@@ -102,7 +102,7 @@ const AddCard = () => {
 
 
         try {
-            await createProduct(descriptionProduct, sizeProduct, typeProduct, nameProduct, photoProduct);
+            await createProduct(descriptionProduct, sizeProduct, typeProduct, nameProduct, photoProduct, priceProduct);
             alert(`produto cadastrado com sucesso!`)
             navigate('/store');
         } catch (error) {

@@ -13,13 +13,22 @@ import {
     Button
 } from '@chakra-ui/react'
 import { Ratings } from './Ratings'
-
-const handleCart = () => {
-    window.location.href = "./cart";
-}
+import { useState } from 'react'
 
 
-const ProductCard = ({ name, img, description, types }) => {
+
+const ProductCard = ({ name, img, description, types, clickOnLink }) => {
+
+    // let arrayProdId = []
+
+    // arrayProdId.push(prodId)
+
+    // console.log(arrayProdId)
+
+    // const handleCart = () => {
+    //     window.location.href = "../cart";
+    // }
+
 
     return (
         <Card maxW='sm' bgGradient='linear(to-t, #91ffff, white)'>
@@ -48,7 +57,7 @@ const ProductCard = ({ name, img, description, types }) => {
             </CardFooter>
             <Divider />
             <Flex dir='row' justify={'space-between'} bg={'white'}>
-                <Link m={5} as={Button} bg="blue.500" size="lg" fontSize="sm" onClick={handleCart}>
+                <Link m={5} as={Button} bg="blue.500" size="lg" fontSize="sm" onClick={clickOnLink}>
                     Adicionar ao carrinho
                 </Link>
                 <Link m={5} as={Button} bg="blue.500" size="lg" fontSize="sm">
