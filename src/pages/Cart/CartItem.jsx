@@ -13,6 +13,7 @@ export const CartItem = (props) => {
     onChangeQuantity,
     onClickDelete,
   } = props
+
   return (
     <Flex
       direction={{

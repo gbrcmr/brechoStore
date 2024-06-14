@@ -19,8 +19,11 @@ import {
   InputGroup,
 } from '@chakra-ui/react';
 import { HiEye, HiEyeOff } from 'react-icons/hi';
-import useAuth from '../hooks/useAuth';
+//import useAuth from '../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
+import api from '../services/api'
+import useAuth from '../hooks/useAuth';
 
 export const Cadaster = () => {
   const { isOpen, onToggle } = useDisclosure();
@@ -35,8 +38,8 @@ export const Cadaster = () => {
   const [phoneError, setPhoneError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [error, setError] = useState('');
-
   const { signUp } = useAuth();
+
 
   const onClickReveal = () => {
     onToggle();
@@ -48,7 +51,8 @@ export const Cadaster = () => {
     return emailRegex.test(email);
   };
 
-  const handleSignUp = () => {
+  const handleSignUp = async () => {
+
     // Reset errors
     setError('');
     setNameError('');
@@ -82,16 +86,17 @@ export const Cadaster = () => {
       return;
     }
 
+    console.log('passou aqui')
     // Call signUp function
-    const res = signUp(email, password);
+    try {
+      await signUp(name, email, password, phone);
+      alert(`Conta criada!`)
+      navigate('/login');
+    } catch (error) {
+      // Set error returned from signIn function
+      console.log("deu ruim", error);
 
-    if (res) {
-      setError(res);
-      return;
     }
-
-    alert('Usuário cadastrado com sucesso');
-    navigate('/login');
   };
 
   return (
