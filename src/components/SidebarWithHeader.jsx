@@ -20,6 +20,7 @@ import {
   MenuList,
   Link,
   Select,
+  background,
 } from '@chakra-ui/react'
 import {
   FiHome,
@@ -144,6 +145,7 @@ const MobileNav = ({ onOpen, ...rest }) => {
         <Search />
         <Link href='/cart'>
           <IconButton size="lg" variant="ghost" aria-label="open menu" icon={<FiShoppingCart />} />
+          <span>1</span>
         </Link>
 
       </HStack >

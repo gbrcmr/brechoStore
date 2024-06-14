@@ -1,64 +1,74 @@
-import ProductCard from "../components/ProductCard"
-import { Search } from "../components/Search"
-import SidebarWithHeader from "../components/SidebarWithHeader"
-import StoreCard from "../components/StoreCard"
-import AddCard from "../components/AddCard"
-import { Grid, GridItem, Center, Flex, Spacer } from '@chakra-ui/react'
-import { Products } from './Products'
-import ProductCardEditable from "../components/ProductCardEditable"
+import ProductCard from "../components/ProductCard";
+import { Search } from "../components/Search";
+import SidebarWithHeader from "../components/SidebarWithHeader";
+import StoreCard from "../components/StoreCard";
+import AddCard from "../components/AddCard";
+import { Grid, Center, Flex } from '@chakra-ui/react';
+import { Products } from './Products';
+import ProductCardEditable from "../components/ProductCardEditable";
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from "react"
-import api from "../services/api"
+import { useEffect, useState } from "react";
+import api from "../services/api";
 
 export const Store = () => {
-    const [isRegistred, setIsRegistred] = useState()
+    const [isRegistered, setIsRegistered] = useState(null);
+    const [dataUser, setDataUser] = useState(undefined);
+    const [dataProd, setDataProd] = useState(undefined);
 
-    const [dataProd, setDataProd] = useState();
+    const userToken = JSON.parse(localStorage.getItem('user_token'));
+    const userTokenJson = userToken?.userid;
+    console.log('eiei', userTokenJson)
 
-    const user_token = JSON.parse(localStorage.getItem('user_token'))
-    const user_token_json = user_token.userid
-    console.log(user_token_json)
-
-    const store_token = JSON.parse(localStorage.getItem('store_token'))
-    const store_token_json = store_token.userid
-    console.log(store_token_json)
-
-
+    const storeToken = JSON.parse(localStorage.getItem('store_token'));
+    const storeId = storeToken?.lojaid;
 
     const navigate = useNavigate();
 
+    const getMyStore = async () => {
+        try {
+            const response = await api.get(`/store/mystore/${userTokenJson}`);
+            console.log(response.data[0].lojaid)
+            setDataUser(response.data[0].lojaid);
+            return response.data;
+        } catch (error) {
+            setIsRegistered(false);
+
+        }
+    };
 
     const getProducts = async () => {
         try {
-            const response = await api.get("/store/products");
-
-            setDataProd(response.data)
+            const response = await api.get(`/store/${dataUser}`);
+            setDataProd(response.data);
             return response.data;
         } catch (error) {
             console.error("Erro ao buscar produtos", error);
-            throw error;
         }
-
-    }
+    };
 
     useEffect(() => {
-        if (user_token_json === store_token_json) {
-            setIsRegistred(true)
-        } else {
-            setIsRegistred(false)
+        getMyStore();
+    }, []);
+
+    useEffect(() => {
+        console.log('.........', dataUser)
+        if (dataUser !== undefined) {
+            console.log('passou')
+            setIsRegistered(true);
+            getProducts();
         }
-        getProducts();
-    }, [isRegistred]);
+    }, [dataUser]);
 
-    if (!isRegistred) {
-        return navigate('/store/cadaster');
+    useEffect(() => {
+        if (isRegistered === false) {
+            navigate('/store/cadaster');
+        }
+    }, [isRegistered, navigate]);
+
+    if (dataProd === undefined) {
+        return null;
     }
 
-
-
-    if (!dataProd) {
-        return null
-    }
     return (
         <SidebarWithHeader>
             <Grid>

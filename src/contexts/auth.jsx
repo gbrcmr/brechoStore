@@ -139,7 +139,7 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const createProduct = async (descriptionProduct, sizeProduct, typeProduct, nameProduct, photoProduct) => {
+    const createProduct = async (descriptionProduct, sizeProduct, typeProduct, nameProduct, photoProduct, priceProduct) => {
         const store = JSON.parse(localStorage.getItem('store_token'));
         try {
             const productStorage = JSON.parse(localStorage.getItem("product_db")) || [];
@@ -157,7 +157,8 @@ export const AuthProvider = ({ children }) => {
                 tamanho_prod: sizeProduct,
                 tipo_prod: typeProduct,
                 nome_prod: nameProduct,
-                foto_prod: photoProduct
+                foto_prod: photoProduct,
+                preco_prod: priceProduct
             };
 
             const updatedProducts = [...productStorage, newProduct];
@@ -170,7 +171,8 @@ export const AuthProvider = ({ children }) => {
                 tamanho_prod: sizeProduct,
                 tipo_prod: typeProduct,
                 nome_prod: nameProduct,
-                foto_prod: photoProduct
+                foto_prod: photoProduct,
+                preco_prod: priceProduct
             });
 
             if (response.data) {
@@ -184,6 +186,7 @@ export const AuthProvider = ({ children }) => {
             throw error;
         }
     };
+
     return (
         <AuthContext.Provider
             value={{ user, signed: !!user, signIn, signUp, signOut, createStore, createProduct }}
