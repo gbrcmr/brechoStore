@@ -35,12 +35,13 @@ export const Search = () => {
       <Input
         pr='4.5rem'
         type={'text'}
+        bg={'white'}
         placeholder='Busque o seu produto...'
         value={term}
         onChange={(e) => setTerm(e.target.value)}
       />
       <InputRightElement>
-        <IconButton aria-label='Search database' bg='#2de2e6' icon={<SearchIcon />} />
+        <IconButton aria-label='Search database' bg='#82EEFD' icon={<SearchIcon />} />
       </InputRightElement>
     </InputGroup>
   )

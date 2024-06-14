@@ -16,8 +16,8 @@ import { Ratings } from './Ratings'
 const StoreCard = ({ name, img, description, types }) => {
 
     return (
-        <Card maxW='sm' bg={'#2de2e6'} >
-            <Text bg={'#9700cc'} align={'center'} fontSize={'large'} fontWeight={700}>
+        <Card maxW='sm' bgGradient='linear(to-t, #91ffff, white)'>
+            <Text bg={'#e8a2d3'} align={'center'} fontSize={'large'} fontWeight={700}>
                 {name}
             </Text>
             <Divider />
@@ -34,7 +34,7 @@ const StoreCard = ({ name, img, description, types }) => {
                 </Stack>
             </CardBody>
             <Divider />
-            <CardFooter bg={'#f6019d'}>
+            <CardFooter bg={'#91ffff'}>
                 <Text>
                     {types}
                 </Text>
