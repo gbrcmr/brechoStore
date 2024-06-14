@@ -20,6 +20,7 @@ import {
   MenuList,
   Link,
   Select,
+  Image,
 } from '@chakra-ui/react'
 import {
   FiHome,
@@ -33,6 +34,7 @@ import {
   FiShoppingCart,
 } from 'react-icons/fi'
 import { Search } from './Search'
+import { FcFullBattery } from 'react-icons/fc'
 const LinkItems = [
   { name: 'Home', icon: FiHome, route: '/' },
   { name: 'Perfil', icon: FiSettings, route: '/Profile' },
@@ -45,17 +47,17 @@ const SidebarContent = ({ onClose, ...rest }) => {
   return (
     <Box
       transition="3s ease"
-      bg={'#f6019d'}
-      borderRight="1px"
-      borderRightColor={'#0266c8'}
+      bgGradient='linear(to-b, #ff91d7 , #82EEFD)'
       w={{ base: 'full', md: 60 }}
       pos="fixed"
       h="full"
       {...rest}>
       <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
-        <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
-          Logo
-        </Text>
+       <Image
+       boxSize= '130px'
+       src= 'https://raw.githubusercontent.com/Gu1mot4/brechoStore/main/Logo%20Brecho%20V2.png' 
+       alt= 'Logo Brecho.png' 
+       />
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
       {LinkItems.map((link) => (
@@ -119,7 +121,7 @@ const MobileNav = ({ onOpen, ...rest }) => {
       px={{ base: 4, md: 4 }}
       height="20"
       alignItems="center"
-      bg={'#f6019d'}
+      bgGradient='linear(to-r, #ff91d7 , #82EEFD)'
       borderBottomWidth="1px"
       borderBottomColor={useColorModeValue('gray.200', 'gray.700')}
       justifyContent={{ base: 'space-between', md: 'flex-end' }}

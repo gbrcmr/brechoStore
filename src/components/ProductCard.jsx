@@ -22,8 +22,8 @@ const handleCart = () => {
 const ProductCard = ({ name, img, description, types }) => {
 
     return (
-        <Card maxW='sm' bg={'#2de2e6'} >
-            <Text bg={'#9700cc'} align={'center'} fontSize={'large'} fontWeight={700}>
+        <Card maxW='sm' bgGradient='linear(to-t, #91ffff, white)'>
+            <Text bg={'#ff91d7'} align={'center'} fontSize={'large'} fontWeight={700}>
                 {name}
             </Text>
             <Divider />
