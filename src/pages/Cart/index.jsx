@@ -15,6 +15,7 @@ import SidebarWithHeader from '../../components/SidebarWithHeader'
 import { useState, useEffect } from 'react'
 import api from '../../services/api'
 import { PriceTag } from './PriceTag'
+import { CheckoutProvider } from '../../contexts/CheckoutProvider'
 
 
 export const Cart = () => {
@@ -206,7 +207,7 @@ export const Cart = () => {
                   description={item.descricao_prod}
                   imageUrl={item.foto_prod}
                   currency={'BRL'}
-                  price={10}
+                  price={item.preco_prod}
                   onClickDelete={() => deleteCart(item.prodid, idUser)}
                 />
               ))}
@@ -214,7 +215,9 @@ export const Cart = () => {
           </Stack>
 
           <Flex direction="column" align="center" flex="1">
-            <CartOrderSummary />
+            <CheckoutProvider>
+              <CartOrderSummary />
+            </CheckoutProvider>
             <HStack mt="6" fontWeight="semibold">
               <p>ou</p>
               <Link href='/' color={mode('blue.500', 'blue.200')}>Continuar comprando</Link>
