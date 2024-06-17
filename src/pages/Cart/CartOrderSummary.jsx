@@ -42,14 +42,10 @@ export const CartOrderSummary = () => {
         cpfDevedor: cpfClient,
         valorPago: formattedValue
       });
-      if (response.ok) {
-        const data = await response.json();
-        console.log(data);
-      } else {
-        console.error('Erro ao criar cobrança Pix:', response.statusText);
-      }
+      const data = await response.data;
+      console.log(data);
     } catch (error) {
-      console.error('Erro ao criar cobrança Pix:', error);
+      console.error('Erro catch:', error);
     }
 
   }

@@ -10,6 +10,7 @@ import { Checkout } from './pages/Checkout'
 import { Products } from './pages/Products'
 import { Store } from './pages/Store'
 import { Favorites } from './pages/Favorites'
+import { PaymentPage } from './pages/PaymentPage'
 import { useParams } from 'react-router-dom'
 
 export const Router = () => {
@@ -23,6 +24,7 @@ export const Router = () => {
             <Route path='/cart' element={<Cart />} />
             <Route path='/profile' element={<Profile />} />
             <Route path='/checkout' element={<Checkout />} />
+            <Route path='/checkout/payment' element={<PaymentPage />} />
             <Route path='/products' element={<Products />} />
             <Route path='/store/' element={<Store />} />\
             <Route path='/store/:storeId' element={<Products />} />
