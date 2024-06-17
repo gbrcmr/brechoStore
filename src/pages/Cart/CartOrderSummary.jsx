@@ -11,6 +11,7 @@ import { FaArrowRight } from 'react-icons/fa';
 import { formatPrice } from './PriceTag';
 import { CheckoutContext } from '../../contexts/CheckoutProvider';
 import { useContext } from 'react';
+import api from '../../services/api';
 
 const handleCheckout = () => {
   window.location.href = "/checkout";
@@ -29,7 +30,30 @@ const OrderSummaryItem = (props) => {
 }
 
 export const CartOrderSummary = () => {
-  const { totalPrice } = useContext(CheckoutContext);
+  const { totalPrice, nameClient, cpfClient } = useContext(CheckoutContext);
+
+
+  const createPix = async () => {
+    try {
+      const formattedValue = parseFloat(totalPrice).toFixed(2);
+
+      const response = await api.post("/api/createCharge", {
+        nomeDevedor: nameClient,
+        cpfDevedor: cpfClient,
+        valorPago: formattedValue
+      });
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data);
+      } else {
+        console.error('Erro ao criar cobrança Pix:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Erro ao criar cobrança Pix:', error);
+    }
+
+  }
+
 
   return (
     <Stack spacing="8" borderWidth="1px" rounded="lg" padding="8" width="full">
@@ -46,7 +70,7 @@ export const CartOrderSummary = () => {
           </Text>
         </Flex>
       </Stack>
-      <Link as={Button} bg="blue.500" size="lg" fontSize="md" rightIcon={<FaArrowRight />} onClick={handleCheckout}>
+      <Link as={Button} bg="blue.500" size="lg" fontSize="md" rightIcon={<FaArrowRight />} onClick={createPix}>
         Checkout
       </Link>
     </Stack>

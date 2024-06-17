@@ -104,7 +104,7 @@ export const Products = () => {
                             Produto adicionado ao carrinho!
                         </Alert>
                     }
-                    <Flex justifyContent={'space-around'} gap={10}>
+                    <Flex justifyContent={'space-around'} gap={10} wrap={'wrap'}>
                         {dataProd.map(product => (
                             < ProductCard key={product.prodid}
                                 name={product.nome_prod}

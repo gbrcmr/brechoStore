@@ -8,6 +8,10 @@ export const CheckoutProvider = ({ children }) => {
     const [dataCart, setDataCart] = useState([]);
     const [productList, setProductList] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
+
+    const [cpfClient, setCpfClient] = useState();
+    const [nameClient, setNameClient] = useState();
+
     const userToken = localStorage.getItem("user_token");
     const parsedToken = JSON.parse(userToken);
     const idUser = parsedToken.userid;
@@ -15,7 +19,6 @@ export const CheckoutProvider = ({ children }) => {
     const cartById = async (userId) => {
         try {
             const response = await api.get(`/cart/${userId}`);
-            console.log("Cart data:", response.data[0].carrinho);
             setDataCart(response.data[0].carrinho || []);
         } catch (error) {
             console.error("Erro ao buscar produtos", error);
@@ -33,11 +36,14 @@ export const CheckoutProvider = ({ children }) => {
         }
     }
 
-
-    const calcTotalPrice = async () => {
+    const getUser = async (id) => {
         try {
-            const response = await api.get(`/cart/product/${prodId}`);
-            return response.data[0];
+            const response = await api.get(`/search/${id}`);
+            setNameClient(response.data[0].nome)
+            setCpfClient(response.data[0].cpf)
+            console.log(nameClient)
+            console.log(cpfClient)
+            return response.data;
         } catch (error) {
             console.error("Erro ao buscar produtos", error);
             throw error;
@@ -46,6 +52,7 @@ export const CheckoutProvider = ({ children }) => {
 
     useEffect(() => {
         cartById(idUser);
+        getUser(idUser);
     }, [idUser]);
 
     useEffect(() => {
@@ -54,7 +61,6 @@ export const CheckoutProvider = ({ children }) => {
                 const products = await Promise.all(dataCart.map(item => getProductsByProductId(item)));
                 setProductList(products);
                 const allPrices = await Promise.all(products.map(item => parseFloat(item.preco_prod)));
-                console.log('LAAAAA', allPrices)
                 const sumWithInitial = allPrices.reduce(
                     (accumulator, currentValue) => accumulator + currentValue,
                     0,
@@ -69,7 +75,6 @@ export const CheckoutProvider = ({ children }) => {
     }, [dataCart]);
 
     useEffect(() => {
-        console.log('FALAAA', totalPrice)
     }, [totalPrice]);
 
     const deleteCart = async (prodid, userid) => {
@@ -82,12 +87,11 @@ export const CheckoutProvider = ({ children }) => {
         }
     }
 
-    console.log('wwwww', productList)
 
 
     return (
         <CheckoutContext.Provider
-            value={{ dataCart, idUser, productList, totalPrice }}
+            value={{ dataCart, idUser, productList, totalPrice, nameClient, cpfClient }}
         >
             {children}
         </CheckoutContext.Provider>
