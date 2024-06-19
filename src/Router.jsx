@@ -24,7 +24,7 @@ export const Router = () => {
             <Route path='/cart' element={<Cart />} />
             <Route path='/profile' element={<Profile />} />
             <Route path='/checkout' element={<Checkout />} />
-            <Route path='/checkout/payment' element={<PaymentPage />} />
+            <Route path='/checkout/payment/:txid' element={<PaymentPage />} />
             <Route path='/products' element={<Products />} />
             <Route path='/store/' element={<Store />} />\
             <Route path='/store/:storeId' element={<Products />} />

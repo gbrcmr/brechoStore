@@ -12,6 +12,8 @@ import { formatPrice } from './PriceTag';
 import { CheckoutContext } from '../../contexts/CheckoutProvider';
 import { useContext } from 'react';
 import api from '../../services/api';
+import { useNavigate } from 'react-router-dom'
+
 
 const handleCheckout = () => {
   window.location.href = "/checkout";
@@ -30,7 +32,37 @@ const OrderSummaryItem = (props) => {
 }
 
 export const CartOrderSummary = () => {
-  const { totalPrice, nameClient, cpfClient } = useContext(CheckoutContext);
+  const { totalPrice, nameClient, productList, cpfClient, idUser } = useContext(CheckoutContext);
+
+  const navigate = useNavigate();
+
+  const productNamesArray = [];
+
+  productList.forEach(product => {
+    productNamesArray.push(product.nome_prod);
+  });
+
+  console.log('oiee', productNamesArray);
+
+  const createOrder = async (pedidoid, data_ped, valor_ped, nome_prod, userid) => {
+    try {
+
+      const formattedValue = parseFloat(totalPrice).toFixed(2);
+
+      const response = await api.post("/create/order", {
+        pedidoid: pedidoid,
+        data_ped: data_ped,
+        valor_ped: valor_ped,
+        nome_prod: nome_prod,
+        userid: userid,
+      });
+      const data = await response.data;
+      console.log('AYYYYYYYY', data);
+    } catch (error) {
+      console.error('Erro catch:', error);
+    }
+
+  }
 
 
   const createPix = async () => {
@@ -43,7 +75,8 @@ export const CartOrderSummary = () => {
         valorPago: formattedValue
       });
       const data = await response.data;
-      console.log(data);
+      await createOrder(data.txid, data.loc.criacao, formattedValue, productNamesArray, idUser)
+      navigate(`/checkout/payment/${data.txid}`);
     } catch (error) {
       console.error('Erro catch:', error);
     }
