@@ -14,12 +14,18 @@ import {
   TableContainer,
 } from '@chakra-ui/react';
 import useAuth from "../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
+import sgMail from '@sendgrid/mail';
+
+
 
 export const Orders = () => {
   const { user } = useAuth();
   const [orderList, setOrderData] = useState([]);
   const [orderStatuses, setOrderStatuses] = useState({});
   const [hasData, setHasData] = useState(false);
+  const navigate = useNavigate();
+
 
   const formatValue = (valor) => {
     return new Intl.NumberFormat('pt-BR', {
@@ -49,13 +55,14 @@ export const Orders = () => {
     }
   };
 
+
   // Função para buscar os pedidos do usuário
   const getOrders = async () => {
     try {
       if (user) {
         const response = await api.get(`/order/${user.id}`);
         const orders = response.data;
-        console.log('feeee', orders)
+
 
         // Buscar status para cada pedido
         const statuses = await Promise.all(
@@ -78,6 +85,15 @@ export const Orders = () => {
       console.error("Erro ao buscar pedidos", error);
     }
   };
+
+
+
+  const redirectAndSendEmail = async (pedidoid) => {
+    const response = await api.get(`/send`);
+
+    navigate(`/checkout/payment/${pedidoid}`);
+    return response.data
+  }
 
   useEffect(() => {
     if (user !== null) {
@@ -115,8 +131,8 @@ export const Orders = () => {
 
                   </Td>
                   <Td><Center>{formatDate(order.data_ped)}</Center></Td>
-                  <Td isNumeric><Center>{formatValue(order.valor_ped)}</Center></Td>
-                  <Td backgroundColor={"yellow"}><Center><Link href={`/checkout/payment/${order.pedidoid}`}>{orderStatuses[order.pedidoid] || 'Carregando...'}</Link></Center></Td>
+                  <Td isNumeric><Center>{formatValue(parseFloat(order.valor_ped) + 15.00)}</Center></Td>
+                  <Td bg={orderStatuses[order.pedidoid] === 'CONCLUIDA' ? 'green.100' : 'yellow.100'}><Center><Link onClick={() => redirectAndSendEmail(order.pedidoid)}>{orderStatuses[order.pedidoid] || 'Carregando...'}</Link></Center></Td>
                 </Tr>
               ))}
             </Tbody>

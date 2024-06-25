@@ -28,7 +28,7 @@ const StoreCard = ({ name, img, description, types }) => {
                 />
                 <Stack mt='6' spacing='3'>
                     <Heading size='md'></Heading>
-                    <Text>
+                    <Text align={"center"}>
                         {description}
                     </Text>
                 </Stack>

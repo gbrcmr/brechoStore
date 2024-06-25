@@ -84,7 +84,7 @@ export const Profile = () => {
                                 <FormControl>
                                     <FormLabel htmlFor="cpf">CPF</FormLabel>
                                     <NumberInput>
-                                        <NumberInputField id="cpf" type="cpf" disabled={true} placeholder={'222.222.222-11'} />
+                                        <NumberInputField id="cpf" type="cpf" disabled={true} placeholder={`${user.cpf}`} />
                                     </NumberInput>
                                 </FormControl>
                                 <FormControl>

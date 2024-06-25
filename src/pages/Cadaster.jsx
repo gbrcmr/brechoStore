@@ -32,10 +32,12 @@ export const Cadaster = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
+  const [cpf, setCpf] = useState('');
   const [password, setPassword] = useState('');
   const [nameError, setNameError] = useState('');
   const [emailError, setEmailError] = useState('');
   const [phoneError, setPhoneError] = useState('');
+  const [cpfError, setCpfError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [error, setError] = useState('');
   const { signUp } = useAuth();
@@ -59,6 +61,7 @@ export const Cadaster = () => {
     setEmailError('');
     setPhoneError('');
     setPasswordError('');
+    setCpfError('');
 
     // Basic validation
     if (!name) {
@@ -81,6 +84,11 @@ export const Cadaster = () => {
       return;
     }
 
+    if (!cpf) {
+      setCpfError('CPF é obrigatório.');
+      return;
+    }
+
     if (!password) {
       setPasswordError('Senha é obrigatória.');
       return;
@@ -89,7 +97,7 @@ export const Cadaster = () => {
     console.log('passou aqui')
     // Call signUp function
     try {
-      await signUp(name, email, password, phone);
+      await signUp(name, email, password, phone, cpf);
       alert(`Conta criada!`)
       navigate('/login');
     } catch (error) {
@@ -179,6 +187,19 @@ export const Cadaster = () => {
                   onChange={(e) => {
                     setEmail(e.target.value);
                     setEmailError('');
+                  }}
+                />
+                <FormErrorMessage>{emailError}</FormErrorMessage>
+              </FormControl>
+              <FormControl isInvalid={emailError}>
+                <FormLabel htmlFor="cpf">CPF</FormLabel>
+                <Input
+                  id="cpf"
+                  type="cpf"
+                  value={cpf}
+                  onChange={(e) => {
+                    setCpf(e.target.value);
+                    setCpfError('');
                   }}
                 />
                 <FormErrorMessage>{emailError}</FormErrorMessage>

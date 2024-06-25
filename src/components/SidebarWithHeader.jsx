@@ -33,18 +33,42 @@ import {
   FiBell,
   FiHeart,
   FiShoppingCart,
+  FiLogOut
 } from 'react-icons/fi'
 import { Search } from './Search'
 import { FcFullBattery } from 'react-icons/fc'
+import useAuth from '../hooks/useAuth'
+import { useState, useEffect } from 'react'
+import api from '../services/api'
 const LinkItems = [
   { name: 'Home', icon: FiHome, route: '/' },
   { name: 'Perfil', icon: FiSettings, route: '/Profile' },
   { name: 'Minha loja', icon: FiCompass, route: '/store' },
   { name: 'Meus pedidos', icon: FiTrendingUp, route: '/orders' },
   { name: 'Favoritos', icon: FiHeart, route: '/favorites' },
+  { name: 'Sair', icon: FiLogOut, route: '/login' },
 ]
 
 const SidebarContent = ({ onClose, ...rest }) => {
+
+  const userToken = localStorage.getItem("user_token");
+  const parsedToken = JSON.parse(userToken);
+  const idUser = parsedToken.userid;
+  const [dataCart, setDataCart] = useState('')
+
+  const cartById = async (userId) => {
+    try {
+      console.log(userId)
+      const response = await api.get(`/cart/${userId}`);
+      setDataCart(response.data[0].carrinho.length || []);
+
+    } catch (error) {
+      console.error("Erro ao buscar produtos", error);
+      throw error;
+    }
+  }
+
+
   return (
     <Box
       transition="3s ease"
@@ -54,11 +78,11 @@ const SidebarContent = ({ onClose, ...rest }) => {
       h="full"
       {...rest}>
       <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
-       <Image
-       boxSize= '130px'
-       src= 'https://raw.githubusercontent.com/Gu1mot4/brechoStore/main/Logo%20Brecho%20V2.png' 
-       alt= 'Logo Brecho.png' 
-       />
+        <Image
+          boxSize='130px'
+          src='https://raw.githubusercontent.com/Gu1mot4/brechoStore/main/Logo%20Brecho%20V2.png'
+          alt='Logo Brecho.png'
+        />
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
       {LinkItems.map((link) => (
@@ -116,6 +140,30 @@ const NavItem = ({ icon, routes, children, ...rest }) => {
 }
 
 const MobileNav = ({ onOpen, ...rest }) => {
+  const userToken = localStorage.getItem("user_token");
+  const parsedToken = JSON.parse(userToken);
+  const idUser = parsedToken.userid;
+  const [dataCart, setDataCart] = useState('')
+
+  const cartById = async (userId) => {
+    try {
+      console.log(userId)
+      const response = await api.get(`/cart/${userId}`);
+      setDataCart(response.data[0].carrinho.length || []);
+
+    } catch (error) {
+      console.error("Erro ao buscar produtos", error);
+      throw error;
+    }
+  }
+
+  useEffect(() => {
+    cartById(idUser)
+  }, [idUser]);
+
+
+
+  console.log(dataCart)
   return (
     <Flex
       ml={{ base: 0, md: 60 }}
@@ -130,28 +178,22 @@ const MobileNav = ({ onOpen, ...rest }) => {
       <IconButton
         display={{ base: 'flex', md: 'none' }}
         onClick={onOpen}
+        bgGradient='linear(to-r, #ff91d7 , #82EEFD)'
         variant="outline"
         aria-label="open menu"
         icon={<FiMenu />}
       />
 
-      <Text
-        display={{ base: 'flex', md: 'none' }}
-        fontSize="2xl"
-        fontFamily="monospace"
-        fontWeight="bold">
-        Logo
-      </Text>
-
       <HStack spacing={{ base: '0', md: '80' }}>
         <Search />
-        <Link href='/cart'>
+        <Link href='/cart' display="flex" alignItems="center" _hover={{ textDecoration: 'none' }}>
           <IconButton size="lg" variant="ghost" aria-label="open menu" icon={<FiShoppingCart />} />
-          <span>1</span>
+          <span style={{ marginLeft: '8px', color: 'currentColor', display: 'inline-block' }}>
+            {dataCart || ''}
+          </span>
         </Link>
-
-      </HStack >
-    </Flex >
+      </HStack>
+    </Flex>
   )
 }
 

@@ -29,7 +29,6 @@ export const CheckoutProvider = ({ children }) => {
     const getProductsByProductId = async (prodId) => {
         try {
             const response = await api.get(`/cart/product/${prodId}`);
-            console.log('ai ó', response.data[0])
             return response.data[0];
         } catch (error) {
             console.error("Erro ao buscar produtos", error);
@@ -74,9 +73,6 @@ export const CheckoutProvider = ({ children }) => {
 
         fetchProducts();
     }, [dataCart]);
-
-    useEffect(() => {
-    }, [totalPrice]);
 
     const deleteCart = async (prodid, userid) => {
         try {

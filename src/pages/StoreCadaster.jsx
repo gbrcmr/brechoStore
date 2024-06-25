@@ -30,10 +30,12 @@ export const StoreCadaster = () => {
   const [emailStore, setEmailStore] = useState('');
   const [instagram, setInstagram] = useState('');
   const [phoneStore, setPhoneStore] = useState('');
+  const [photoStore, setPhotoStore] = useState('');
   const [nameError, setNameError] = useState('');
   const [emailError, setEmailError] = useState('');
   const [phoneError, setPhoneError] = useState('');
   const [instagramError, setInstagramError] = useState('');
+  const [photoError, setPhotoError] = useState('');
   const [error, setError] = useState('');
   const { createStore } = useAuth();
 
@@ -73,9 +75,14 @@ export const StoreCadaster = () => {
       return;
     }
 
+    if (!photoStore) {
+      setPhoneError('Foto é obrigatória.');
+      return;
+    }
+
 
     try {
-      await createStore(nameStore, emailStore, phoneStore, instagram);
+      await createStore(nameStore, emailStore, phoneStore, instagram, photoStore);
       alert(`bem-vindo!`)
       navigate('/');
     } catch (error) {
@@ -194,6 +201,19 @@ export const StoreCadaster = () => {
                     }}
                   />
                   <FormErrorMessage>{instagramError}</FormErrorMessage>
+                </FormControl>
+                <FormControl isInvalid={photoError}>
+                  <FormLabel color={'white'} htmlFor="photoStore">Foto da loja</FormLabel>
+                  <Input
+                    id="photoStore"
+                    type="photoStore"
+                    value={photoStore}
+                    onChange={(e) => {
+                      setPhotoStore(e.target.value);
+                      setPhotoError('');
+                    }}
+                  />
+                  <FormErrorMessage>{photoError}</FormErrorMessage>
                 </FormControl>
               </Stack>
               <Button backgroundColor={'#b28bc0'} color={'white'} onClick={handleStoreCadaster}>

@@ -47,7 +47,7 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const signUp = async (name, email, password, phone) => {
+    const signUp = async (name, email, password, phone, cpf) => {
         try {
             const usersStorage = JSON.parse(localStorage.getItem("users_db")) || [];
 
@@ -62,7 +62,8 @@ export const AuthProvider = ({ children }) => {
                 name: name,
                 email: email,
                 password: password,
-                phone: phone
+                phone: phone,
+                cpf: cpf,
             };
 
             const updatedUsers = [...usersStorage, newUser];
@@ -73,7 +74,8 @@ export const AuthProvider = ({ children }) => {
                 nome: name,
                 email: email,
                 senha: password,
-                telefone: phone
+                telefone: phone,
+                cpf: cpf
             });
 
             if (response.data) {
@@ -95,7 +97,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem("user_token");
     };
 
-    const createStore = async (storeName, storeEmail, storePhone, storeInstagram) => {
+    const createStore = async (storeName, storeEmail, storePhone, storeInstagram, photoStore) => {
         const user = JSON.parse(localStorage.getItem('user_token'));
         try {
             const storeStorage = JSON.parse(localStorage.getItem("stores_db")) || [];
@@ -112,7 +114,8 @@ export const AuthProvider = ({ children }) => {
                 nome_loja: storeName,
                 email_loja: storeEmail,
                 instagram: storeInstagram,
-                telefone_loja: storePhone
+                telefone_loja: storePhone,
+                foto_loja: photoStore
             };
 
             const updatedStore = [...storeStorage, newStore];
@@ -125,6 +128,7 @@ export const AuthProvider = ({ children }) => {
                 email_loja: storeEmail,
                 telefone_loja: storePhone,
                 instagram: storeInstagram,
+                foto_loja: photoStore
             });
 
             if (response.data) {
