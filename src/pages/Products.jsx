@@ -14,6 +14,8 @@ export const Products = () => {
     const [dataCart, setDataCart] = useState();
     const [hasAdd, setHasAdd] = useState(false);
 
+    console.log(`oieee`, dataCart)
+
     var url = window.location.href;
     var urlParts = url.split('/');
     var storeId = urlParts[urlParts.length - 1]
@@ -110,7 +112,7 @@ export const Products = () => {
             const response = await api.put(`/cart/add/${userid}/${prodid}`);
 
             console.log('CCCCCCCCCCCCCCCCCCC', response.data.carrinho)
-            if (dataCart === undefined) {
+            if (dataCart === undefined || null || []) {
                 setDataCart[response.data.carrinho]
             } else {
                 setDataCart(prevList => [...prevList, response.data.carrinho])
@@ -166,11 +168,13 @@ export const Products = () => {
                     <Center mb={5} fontWeight={700}>PRODUTOS DESSA LOJA</Center>
                     <Flex justifyContent={'space-around'} gap={10} wrap={'wrap'}>
                         {dataProd.map(product => (
+                            !product.desativado &&
                             < ProductCard key={product.prodid}
                                 name={product.nome_prod}
                                 img={product.foto_prod || 'https://images.unsplash.com/photo-1588689653274-cd16f09dc67b?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'}
                                 description={product.descricao_prod || 'Short rosa de academia, leve e confortável.'}
                                 types={[`${product.tipo_prod}, ${product.tamanho_prod}`]}
+                                price={product.preco_prod}
                                 clickOnLink={() => handleCart(product.prodid)}
                                 instagram={dataStore.instagram}
                                 phone={dataStore.telefone_loja}

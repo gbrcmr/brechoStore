@@ -26,6 +26,8 @@ export const Orders = () => {
   const [hasData, setHasData] = useState(false);
   const navigate = useNavigate();
 
+  console.log(`GOLOOOOOOOOOOOO`, user)
+
 
   const formatValue = (valor) => {
     return new Intl.NumberFormat('pt-BR', {
@@ -39,13 +41,63 @@ export const Orders = () => {
     return new Intl.DateTimeFormat('pt-BR').format(dataObj);
   };
 
+
+
+
+
+  const checkIfDatePassed = async (providedDateString) => {
+
+    const currentDate = new Date();
+
+
+    const providedDate = new Date(providedDateString);
+
+    providedDate.setHours(providedDate.getHours() + 1);
+    providedDate.setSeconds(providedDate.getSeconds() + 1);
+
+
+
+    if (providedDate > currentDate) {
+
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+
+  //CONTINUAR AQUI
+  const hideProduct = async (prodid, desativado) => {
+
+    try {
+      console.log('MAMAMAMA', prodid)
+      const response = await api.put(`/product/hide/${prodid}/${desativado}`);
+
+    } catch (error) {
+      console.error('Erro em esconder produto:', error);
+    }
+  };
+
+
+
+
+
   // Função para buscar o status do pedido
-  const getStatusOrder = async (txid) => {
+  const getStatusOrder = async (txid, prodids) => {
     try {
       const response = await api.get(`/api/details/${txid}`);
+      const createdDate = await checkIfDatePassed(response.data.calendario.criacao)
+
+      if (!createdDate) {
+
+        prodids?.map(product => hideProduct(product, false));
+
+        return 'CANCELADO'
+      }
       const status = response.data.status;
       // Ajustar status "ATIVO" para "AGUARDANDO PAGAMENTO"
       if (status === 'ATIVA') {
+        console.log('tamanhooooo', prodids)
         return 'AGUARDANDO PAGAMENTO';
       }
       return status;
@@ -56,7 +108,8 @@ export const Orders = () => {
   };
 
 
-  // Função para buscar os pedidos do usuário
+
+
   const getOrders = async () => {
     try {
       if (user) {
@@ -64,10 +117,11 @@ export const Orders = () => {
         const orders = response.data;
 
 
-        // Buscar status para cada pedido
+
         const statuses = await Promise.all(
           orders.map(async (order) => {
-            const status = await getStatusOrder(order.pedidoid);
+            console.log('Eaiiiiiiiii', order)
+            const status = await getStatusOrder(order.pedidoid, order.prodids);
             return { pedidoid: order.pedidoid, status };
           })
         );
@@ -88,12 +142,24 @@ export const Orders = () => {
 
 
 
-  const redirectAndSendEmail = async (pedidoid) => {
-    const response = await api.get(`/send`);
 
-    navigate(`/checkout/payment/${pedidoid}`);
-    return response.data
-  }
+  const redirectAndSendEmail = async (pedidoid) => {
+    try {
+      const response = await api.post('/send', {
+        toEmail: user.email,
+        emailBody: '<h1>Atualização do seu pedido! Aguardando pagamento</h1>' // Corpo HTML do email
+      });
+
+      console.log(response.data);
+
+      navigate(`/checkout/payment/${pedidoid}`);
+      return response.data;
+
+    } catch (error) {
+      console.error('Erro ao enviar email:', error);
+
+    }
+  };
 
   useEffect(() => {
     if (user !== null) {
@@ -104,6 +170,8 @@ export const Orders = () => {
   if (user == null) {
     return null;
   }
+
+  console.log('AUAUAUAU', orderList)
 
   return (
     <SidebarWithHeader>
@@ -132,7 +200,7 @@ export const Orders = () => {
                   </Td>
                   <Td><Center>{formatDate(order.data_ped)}</Center></Td>
                   <Td isNumeric><Center>{formatValue(parseFloat(order.valor_ped) + 15.00)}</Center></Td>
-                  <Td bg={orderStatuses[order.pedidoid] === 'CONCLUIDA' ? 'green.100' : 'yellow.100'}><Center><Link onClick={() => redirectAndSendEmail(order.pedidoid)}>{orderStatuses[order.pedidoid] || 'Carregando...'}</Link></Center></Td>
+                  <Td bg={orderStatuses[order.pedidoid] === 'CONCLUIDA' ? 'green.100' : orderStatuses[order.pedidoid] === 'CANCELADO' ? 'red.500' : 'yellow.100'}><Center><Link onClick={() => redirectAndSendEmail(order.pedidoid)}>{orderStatuses[order.pedidoid] || 'Carregando...'}</Link></Center></Td>
                 </Tr>
               ))}
             </Tbody>

@@ -15,6 +15,7 @@ import {
     EditableInput,
     EditableTextarea,
     EditablePreview,
+    Badge
 } from '@chakra-ui/react'
 import { Ratings } from './Ratings'
 
@@ -23,11 +24,11 @@ const handleCart = () => {
 }
 
 
-const ProductCardEditable = ({ name, img, description, types }) => {
+const ProductCardEditable = ({ name, img, description, types, price }) => {
 
     return (
-        <Card maxW={340} bg={'#2de2e6'} >
-            <Text bg={'#9700cc'} align={'center'} fontSize={'large'} fontWeight={700}>
+        <Card maxW={340} bgGradient='linear(to-t, #91ffff, white)' >
+            <Text bg={'#ff91d7'} align={'center'} fontSize={'large'} fontWeight={700}>
                 {name}
             </Text>
             <Divider />
@@ -46,10 +47,15 @@ const ProductCardEditable = ({ name, img, description, types }) => {
                 </Stack>
             </CardBody>
             <Divider />
-            <CardFooter bg={'#f6019d'}>
-                <Text>
-                    {types}
-                </Text>
+            <CardFooter>
+                <Flex justifyContent="space-around" width="100%">
+                    <Badge ml='1' fontSize={14} colorScheme='purple'>
+                        {types}
+                    </Badge>
+                    <Badge ml='1' fontSize={14} colorScheme='green'>
+                        R$ {price}
+                    </Badge>
+                </Flex>
             </CardFooter>
             <Divider />
             <Flex dir='row' justify={'space-between'} bg={'white'}>

@@ -81,6 +81,7 @@ export const Store = () => {
                             img={product.foto_prod || 'https://images.unsplash.com/photo-1588689653274-cd16f09dc67b?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'}
                             description={product.descricao_prod || 'Short rosa de academia, leve e confortável.'}
                             types={[`${product.tipo_prod}, ${product.tamanho_prod}`]}
+                            price={product.preco_prod}
                         />
                     ))}
                     <AddCard />

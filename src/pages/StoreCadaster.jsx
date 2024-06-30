@@ -134,7 +134,7 @@ export const StoreCadaster = () => {
               sm: '10',
             }}
             bg={{
-              base: '#f6019d',
+              base: 'purple',
               sm: 'bg.surface',
             }}
             boxShadow={{
@@ -216,7 +216,7 @@ export const StoreCadaster = () => {
                   <FormErrorMessage>{photoError}</FormErrorMessage>
                 </FormControl>
               </Stack>
-              <Button backgroundColor={'#b28bc0'} color={'white'} onClick={handleStoreCadaster}>
+              <Button backgroundColor={'blue.500'} color={'white'} onClick={handleStoreCadaster}>
                 Cadastrar
               </Button>
               {error && (

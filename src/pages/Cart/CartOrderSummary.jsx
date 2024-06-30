@@ -255,15 +255,47 @@ export const CartOrderSummary = () => {
   const [deliveryErrors, setDeliveryErrors] = useState({});
 
   const productNamesArray = productList.map(product => product.nome_prod);
+  const productidsArray = productList.map(product => product.prodid);
 
-  const createOrder = async (pedidoid, data_ped, valor_ped, nome_prod, userid) => {
+
+  const cleanCart = async (userid) => {
     try {
+      const response = await api.put(`/cart/remove/${userid}`);
+
+
+    } catch (error) {
+      console.error("Erro ao remover produtos do carrinho", error);
+      throw error;
+    }
+  }
+
+
+  const hideProduct = async (prodid, desativado) => {
+
+    try {
+      console.log('MAMAMAMA', prodid)
+      const response = await api.put(`/product/hide/${prodid}/${desativado}`);
+
+    } catch (error) {
+      console.error('Erro em esconder produto:', error);
+    }
+  };
+
+
+  console.log('JUVENTUDE', productList)
+
+  const createOrder = async (pedidoid, data_ped, valor_ped, nome_prod, userid, prodids) => {
+    try {
+
+      cleanCart(userid)
+      await productList.map(product => hideProduct(product.prodid, true));
       const response = await api.post("/create/order", {
         pedidoid,
         data_ped,
         valor_ped,
         nome_prod,
         userid,
+        prodids
       });
       const data = await response.data;
       console.log('Order created:', data);
@@ -271,6 +303,7 @@ export const CartOrderSummary = () => {
       console.error('Error creating order:', error);
     }
   };
+
 
   const createPix = async () => {
     // Check for any delivery errors before proceeding
@@ -288,7 +321,8 @@ export const CartOrderSummary = () => {
         valorPago: (parseFloat(totalPrice) + deliveryCost).toFixed(2)
       });
       const data = await response.data;
-      await createOrder(data.txid, data.loc.criacao, formattedValue, productNamesArray, idUser);
+      await createOrder(data.txid, data.loc.criacao, formattedValue, productNamesArray, idUser, productidsArray);
+      productNamesArray.map(product => product);
       navigate(`/checkout/payment/${data.txid}`);
     } catch (error) {
       console.error('Error creating Pix charge:', error);

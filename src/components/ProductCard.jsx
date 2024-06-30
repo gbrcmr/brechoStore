@@ -21,7 +21,8 @@ import {
     ModalBody,
     ModalFooter,
     Icon,
-    createIcon
+    createIcon,
+    Badge
 } from '@chakra-ui/react'
 import { Ratings } from './Ratings'
 import { useState } from 'react'
@@ -45,7 +46,7 @@ const WhatsappIcon = createIcon({
     ),
 });
 
-const ProductCard = ({ name, img, description, types, clickOnLink, instagram, phone }) => {
+const ProductCard = ({ name, img, description, types, clickOnLink, instagram, phone, price }) => {
 
     const { isOpen, onOpen, onClose } = useDisclosure()
 
@@ -56,7 +57,7 @@ const ProductCard = ({ name, img, description, types, clickOnLink, instagram, ph
                 {name}
             </Text>
             <Divider />
-            <CardBody align={'center'}>
+            <CardBody align={'center'} position="relative">
                 <Image
                     src={img}
                     borderRadius='lg'
@@ -70,10 +71,15 @@ const ProductCard = ({ name, img, description, types, clickOnLink, instagram, ph
                 </Stack>
             </CardBody>
             <Divider />
-            <CardFooter bg={'#f6019d'}>
-                <Text>
-                    {types}
-                </Text>
+            <CardFooter>
+                <Flex justifyContent="space-around" width="100%">
+                    <Badge ml='1' fontSize={14} colorScheme='purple'>
+                        {types}
+                    </Badge>
+                    <Badge ml='1' fontSize={14} colorScheme='green'>
+                        R$ {price}
+                    </Badge>
+                </Flex>
             </CardFooter>
             <Divider />
             <Flex dir='row' justify={'space-between'} bg={'white'}>
