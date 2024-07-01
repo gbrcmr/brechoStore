@@ -31,11 +31,17 @@ export const StoreCadaster = () => {
   const [instagram, setInstagram] = useState('');
   const [phoneStore, setPhoneStore] = useState('');
   const [photoStore, setPhotoStore] = useState('');
+  const [cep, setCep] = useState('');
+  const [endereco, setEndereco] = useState('');
+  const [numero, setNumero] = useState('');
   const [nameError, setNameError] = useState('');
   const [emailError, setEmailError] = useState('');
   const [phoneError, setPhoneError] = useState('');
   const [instagramError, setInstagramError] = useState('');
   const [photoError, setPhotoError] = useState('');
+  const [cepError, setCepError] = useState('');
+  const [enderecoError, setEnderecoError] = useState('');
+  const [numeroError, setNumeroError] = useState('');
   const [error, setError] = useState('');
   const { createStore } = useAuth();
 
@@ -53,6 +59,9 @@ export const StoreCadaster = () => {
     setEmailError('');
     setPhoneError('');
     setInstagramError('');
+    setCepError('')
+    setEnderecoError('')
+    setNumeroError('')
 
     // Basic validation
     if (!nameStore) {
@@ -80,9 +89,23 @@ export const StoreCadaster = () => {
       return;
     }
 
+    if (!cep) {
+      setCepError('CEP é obrigatório.');
+      return;
+    }
+
+    if (!endereco) {
+      setEnderecoError('endereço é obrigatório.');
+      return;
+    }
+
+    if (!numero) {
+      setNumeroError('Número é obrigatório.');
+      return;
+    }
 
     try {
-      await createStore(nameStore, emailStore, phoneStore, instagram, photoStore);
+      await createStore(nameStore, emailStore, phoneStore, instagram, photoStore, cep, endereco, numero);
       alert(`bem-vindo!`)
       navigate('/');
     } catch (error) {
@@ -91,6 +114,25 @@ export const StoreCadaster = () => {
 
     }
   };
+
+
+  const validateCep = (cep) => {
+    if (!cep || cep.length !== 8) {
+      setCepError('CEP inválido');
+      return false;
+    }
+    setCepError('');
+    return true;
+  };
+
+  const handleCepChange = (e) => {
+    const inputValue = e.target.value.replace(/\D/g, ''); // Remove non-numeric characters
+    if (inputValue.length <= 8) {
+      setCep(inputValue);
+      if (cepError) validateCep(inputValue);
+    }
+  };
+
 
   return (
     <SidebarWithHeader>
@@ -214,6 +256,43 @@ export const StoreCadaster = () => {
                     }}
                   />
                   <FormErrorMessage>{photoError}</FormErrorMessage>
+                </FormControl>
+                <FormControl isInvalid={cepError}>
+                  <FormLabel color={'white'} htmlFor="cep">Cep da loja</FormLabel>
+                  <Input
+                    id="cep"
+                    type="cep"
+                    value={cep}
+                    onChange={handleCepChange}
+                    onBlur={() => validateCep(cep)}
+                  />
+                  <FormErrorMessage>{cepError}</FormErrorMessage>
+                </FormControl>
+                <FormControl isInvalid={enderecoError}>
+                  <FormLabel color={'white'} htmlFor="endereco">Endereço da loja</FormLabel>
+                  <Input
+                    id="endereco"
+                    type="endereco"
+                    value={endereco}
+                    onChange={(e) => {
+                      setEndereco(e.target.value);
+                      setEnderecoError('');
+                    }}
+                  />
+                  <FormErrorMessage>{enderecoError}</FormErrorMessage>
+                </FormControl>
+                <FormControl isInvalid={numeroError}>
+                  <FormLabel color={'white'} htmlFor="photoStore">Número</FormLabel>
+                  <Input
+                    id="numero"
+                    type="numero"
+                    value={numero}
+                    onChange={(e) => {
+                      setNumero(e.target.value);
+                      setNumeroError('');
+                    }}
+                  />
+                  <FormErrorMessage>{numeroError}</FormErrorMessage>
                 </FormControl>
               </Stack>
               <Button backgroundColor={'blue.500'} color={'white'} onClick={handleStoreCadaster}>

@@ -13,11 +13,13 @@ import {
 } from '@chakra-ui/react';
 import { FaArrowRight } from 'react-icons/fa';
 import { formatPrice } from './PriceTag';
-import { CheckoutContext } from '../../contexts/CheckoutProvider';
+import { CheckoutContext } from '../../contexts/checkout';
 import { useContext, useState, useEffect } from 'react';
 import api from '../../services/api';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import useAuth from '../../hooks/useAuth';
+import useCheckout from '../../hooks/useCheckout';
 
 const OrderSummaryItem = (props) => {
   const { label, value, children } = props;
@@ -249,10 +251,13 @@ const Delivery = ({ onDeliveryCostChange, setDeliveryErrors }) => {
 };
 
 export const CartOrderSummary = () => {
-  const { totalPrice, nameClient, productList, cpfClient, idUser } = useContext(CheckoutContext);
+  const { totalPrice, nameClient, productList, cpfClient, idUser } = useCheckout();
   const navigate = useNavigate();
   const [deliveryCost, setDeliveryCost] = useState(0);
   const [deliveryErrors, setDeliveryErrors] = useState({});
+  const { cart } = useAuth();
+
+  console.log('CARRINHOO', cart)
 
   const productNamesArray = productList.map(product => product.nome_prod);
   const productidsArray = productList.map(product => product.prodid);
@@ -280,6 +285,10 @@ export const CartOrderSummary = () => {
       console.error('Erro em esconder produto:', error);
     }
   };
+
+  useEffect(() => {
+    console.log('BATEBATEBATE')
+  }, [cart]);
 
 
   console.log('JUVENTUDE', productList)

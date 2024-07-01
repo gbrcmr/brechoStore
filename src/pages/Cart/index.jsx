@@ -15,7 +15,8 @@ import SidebarWithHeader from '../../components/SidebarWithHeader'
 import { useState, useEffect } from 'react'
 import api from '../../services/api'
 import { PriceTag } from './PriceTag'
-import { CheckoutProvider } from '../../contexts/CheckoutProvider'
+import { CheckoutProvider } from '../../contexts/checkout'
+import useAuth from '../../hooks/useAuth'
 
 
 export const Cart = () => {
@@ -24,12 +25,14 @@ export const Cart = () => {
   const userToken = localStorage.getItem("user_token");
   const parsedToken = JSON.parse(userToken);
   const idUser = parsedToken.userid;
+  const { cart, setCart } = useAuth();
 
   const cartById = async (userId) => {
     try {
       const response = await api.get(`/cart/${userId}`);
       console.log("Cart data:", response.data[0].carrinho);
       setDataCart(response.data[0].carrinho || []);
+      setCart(response.data[0].carrinho.length)
     } catch (error) {
       console.error("Erro ao buscar produtos", error);
       throw error;
@@ -54,6 +57,7 @@ export const Cart = () => {
     const fetchProducts = async () => {
       if (Array.isArray(dataCart)) {
         const products = await Promise.all(dataCart.map(item => getProductsByProductId(item)));
+        setCart(dataCart.length)
         setProductList(products);
         console.log('AQUIII', dataCart)
       } else {
@@ -66,6 +70,7 @@ export const Cart = () => {
 
   const deleteCart = async (prodid, userid) => {
     try {
+      console.log('TA AI CARA')
       const response = await api.delete(`/cart/delete/${userid}/${prodid}`);
       setDataCart(prevDataCart => prevDataCart.filter(item => item !== prodid));
     } catch (error) {
@@ -200,6 +205,11 @@ export const Cart = () => {
             </Heading>
 
             <Stack spacing="6">
+              {productList.length === 0 &&
+                <Flex justifyContent={'center'} mt={10}>
+                  <Text fontSize='2xl'>OPS! Parece que não há nada aqui </Text>
+                </Flex>
+              }
               {productList.map((item) => (
                 <CartItem
                   key={item.prodid}

@@ -37,9 +37,9 @@ import {
 } from 'react-icons/fi'
 import { Search } from './Search'
 import { FcFullBattery } from 'react-icons/fc'
-import useAuth from '../hooks/useAuth'
 import { useState, useEffect } from 'react'
 import api from '../services/api'
+import useAuth from '../hooks/useAuth'
 const LinkItems = [
   { name: 'Home', icon: FiHome, route: '/' },
   { name: 'Perfil', icon: FiSettings, route: '/Profile' },
@@ -144,26 +144,9 @@ const MobileNav = ({ onOpen, ...rest }) => {
   const parsedToken = JSON.parse(userToken);
   const idUser = parsedToken.userid;
   const [dataCart, setDataCart] = useState('')
+  const { cart } = useAuth()
 
-  const cartById = async (userId) => {
-    try {
-      console.log(userId)
-      const response = await api.get(`/cart/${userId}`);
-      setDataCart(response.data[0].carrinho.length || []);
-
-    } catch (error) {
-      console.error("Erro ao buscar produtos", error);
-      throw error;
-    }
-  }
-
-  useEffect(() => {
-    cartById(idUser)
-  }, [idUser]);
-
-
-
-  console.log(dataCart)
+  console.log('eaii', cart)
   return (
     <Flex
       ml={{ base: 0, md: 60 }}
@@ -189,7 +172,7 @@ const MobileNav = ({ onOpen, ...rest }) => {
         <Link href='/cart' display="flex" alignItems="center" _hover={{ textDecoration: 'none' }}>
           <IconButton size="lg" variant="ghost" aria-label="open menu" icon={<FiShoppingCart />} />
           <span style={{ marginLeft: '8px', color: 'currentColor', display: 'inline-block' }}>
-            {dataCart || ''}
+            {cart || ''}
           </span>
         </Link>
       </HStack>

@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import { v4 as uuidv4 } from 'uuid';
 import api from "../services/api";
+import useAuth from "../hooks/useAuth";
 
 export const CheckoutContext = createContext({});
 
@@ -8,6 +9,7 @@ export const CheckoutProvider = ({ children }) => {
     const [dataCart, setDataCart] = useState([]);
     const [productList, setProductList] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
+    const { cart, user } = useAuth()
 
     const [cpfClient, setCpfClient] = useState();
     const [nameClient, setNameClient] = useState();
@@ -19,7 +21,7 @@ export const CheckoutProvider = ({ children }) => {
     const cartById = async (userId) => {
         try {
             const response = await api.get(`/cart/${userId}`);
-            setDataCart(response.data[0].carrinho || []);
+            return response.data[0].carrinho || [];
         } catch (error) {
             console.error("Erro ao buscar produtos", error);
             throw error;
@@ -50,29 +52,34 @@ export const CheckoutProvider = ({ children }) => {
         }
     }
 
+    const fetchProducts = async () => {
+        const oi = await cartById(idUser);
+
+        console.log('MIMIMIMI', oi)
+        console.log('DATAAAAA', dataCart)
+        if (Array.isArray(oi)) {
+            const products = await Promise.all(oi.map(item => getProductsByProductId(item)));
+            setProductList(products);
+            const allPrices = await Promise.all(products.map(item => parseFloat(item.preco_prod)));
+            const sumWithInitial = allPrices.reduce(
+                (accumulator, currentValue) => accumulator + currentValue,
+                0,
+            );
+            setTotalPrice(sumWithInitial)
+        } else {
+            console.error("dataCart is not an array", dataCart);
+        }
+    };
+
     useEffect(() => {
         cartById(idUser);
         getUser(idUser);
     }, [idUser]);
 
     useEffect(() => {
-        const fetchProducts = async () => {
-            if (Array.isArray(dataCart)) {
-                const products = await Promise.all(dataCart.map(item => getProductsByProductId(item)));
-                setProductList(products);
-                const allPrices = await Promise.all(products.map(item => parseFloat(item.preco_prod)));
-                const sumWithInitial = allPrices.reduce(
-                    (accumulator, currentValue) => accumulator + currentValue,
-                    0,
-                );
-                setTotalPrice(sumWithInitial)
-            } else {
-                console.error("dataCart is not an array", dataCart);
-            }
-        };
-
+        cartById(idUser);
         fetchProducts();
-    }, [dataCart]);
+    }, [cart]);
 
     const deleteCart = async (prodid, userid) => {
         try {

@@ -5,6 +5,7 @@ import StoreCard from "../components/StoreCard"
 import { Grid, GridItem, Center, Flex, Spacer, Alert, AlertIcon, ScaleFade, useToast } from '@chakra-ui/react'
 import { useState, useEffect } from "react"
 import api from "../services/api"
+import useAuth from "../hooks/useAuth"
 
 export const Products = () => {
 
@@ -13,8 +14,9 @@ export const Products = () => {
     const [dataStore, setDataStore] = useState();
     const [dataCart, setDataCart] = useState();
     const [hasAdd, setHasAdd] = useState(false);
+    const { cart, setCart } = useAuth();
 
-    console.log(`oieee`, dataCart)
+    console.log(`oieee`, cart)
 
     var url = window.location.href;
     var urlParts = url.split('/');
@@ -66,6 +68,7 @@ export const Products = () => {
             const response = await api.get(`/cart/${userId}`);
             console.log("Carrinnnnnnnho:", response.data[0].carrinho);
             setDataCart(response.data[0].carrinho)
+            setCart(response.data[0].carrinho.length)
 
             //console.log(response.data[0].carrinho);
         } catch (error) {
@@ -116,6 +119,7 @@ export const Products = () => {
                 setDataCart[response.data.carrinho]
             } else {
                 setDataCart(prevList => [...prevList, response.data.carrinho])
+                setCart(response.data[0].carrinho.length)
             }
             showAlertSucess();
 
@@ -136,7 +140,7 @@ export const Products = () => {
 
     const handleCart = (id) => {
         try {
-            console.log('PARAPARAPARA', dataCart)
+            console.log('PARAPARAPARA', cart)
             console.log('ÁAAAAAAA', id)
             let found = dataCart?.find((element) => element === id);
             if (found === undefined) {

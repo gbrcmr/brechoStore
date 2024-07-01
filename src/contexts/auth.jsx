@@ -7,6 +7,7 @@ export const AuthContext = createContext({});
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [store, setStore] = useState(null);
+    const [cart, setCart] = useState(null);
 
     useEffect(() => {
         const userToken = localStorage.getItem("user_token");
@@ -23,10 +24,23 @@ export const AuthProvider = ({ children }) => {
             );
 
             if (existingUser) {
-                setUser(existingUser);
+                findUser(existingUser.id);
             }
         }
     }, []);
+
+    const findUser = async (userId) => {
+        try {
+            console.log(userId)
+            const response = await api.get(`/search/${userId}`);
+            setUser(response.data)
+            setCart(response.data[0].carrinho.length || []);
+
+        } catch (error) {
+            console.error("Erro ao buscar produtos", error);
+            throw error;
+        }
+    }
 
     const signIn = async (email, password) => {
         try {
@@ -36,7 +50,9 @@ export const AuthProvider = ({ children }) => {
             });
 
             if (response.data) {
+                console.log('eeeee', response.data.carrinho)
                 setUser(response.data);
+                setCart(response.data.carrinho)
                 localStorage.setItem("user_token", JSON.stringify(response.data));
             }
 
@@ -75,7 +91,7 @@ export const AuthProvider = ({ children }) => {
                 email: email,
                 senha: password,
                 telefone: phone,
-                cpf: cpf
+                cpf: cpf,
             });
 
             if (response.data) {
@@ -97,7 +113,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem("user_token");
     };
 
-    const createStore = async (storeName, storeEmail, storePhone, storeInstagram, photoStore) => {
+    const createStore = async (storeName, storeEmail, storePhone, storeInstagram, photoStore, cep_loja, endereco_loja, numero_loja) => {
         const user = JSON.parse(localStorage.getItem('user_token'));
         try {
             const storeStorage = JSON.parse(localStorage.getItem("stores_db")) || [];
@@ -115,7 +131,10 @@ export const AuthProvider = ({ children }) => {
                 email_loja: storeEmail,
                 instagram: storeInstagram,
                 telefone_loja: storePhone,
-                foto_loja: photoStore
+                foto_loja: photoStore,
+                cep_loja,
+                endereco_loja,
+                numero_loja
             };
 
             const updatedStore = [...storeStorage, newStore];
@@ -128,7 +147,10 @@ export const AuthProvider = ({ children }) => {
                 email_loja: storeEmail,
                 telefone_loja: storePhone,
                 instagram: storeInstagram,
-                foto_loja: photoStore
+                foto_loja: photoStore,
+                cep_loja,
+                endereco_loja,
+                numero_loja
             });
 
             if (response.data) {
@@ -191,9 +213,11 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    console.log(user)
+
     return (
         <AuthContext.Provider
-            value={{ user, signed: !!user, signIn, signUp, signOut, createStore, createProduct }}
+            value={{ user, cart, setCart, signed: !!user, signIn, signUp, signOut, createStore, createProduct }}
         >
             {children}
         </AuthContext.Provider>
