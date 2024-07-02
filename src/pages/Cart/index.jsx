@@ -17,6 +17,8 @@ import api from '../../services/api'
 import { PriceTag } from './PriceTag'
 import { CheckoutProvider } from '../../contexts/checkout'
 import useAuth from '../../hooks/useAuth'
+import Lottie from 'react-lottie'
+import animationData from '../../assets/shopping.json'
 
 
 export const Cart = () => {
@@ -70,7 +72,7 @@ export const Cart = () => {
 
   const deleteCart = async (prodid, userid) => {
     try {
-      console.log('TA AI CARA')
+
       const response = await api.delete(`/cart/delete/${userid}/${prodid}`);
       setDataCart(prevDataCart => prevDataCart.filter(item => item !== prodid));
     } catch (error) {
@@ -161,6 +163,21 @@ export const Cart = () => {
     )
   }
 
+
+
+  const defaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: animationData,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice"
+    }
+  };
+
+
+
+
+
   return (
     <SidebarWithHeader>
       <Box
@@ -200,14 +217,20 @@ export const Cart = () => {
             }}
             flex="2"
           >
-            <Heading fontSize="2xl" fontWeight="extrabold">
+            <Heading fontSize="2xl" alignSelf={'center'} fontWeight="extrabold">
               Carrinho de compras
             </Heading>
 
             <Stack spacing="6">
               {productList.length === 0 &&
-                <Flex justifyContent={'center'} mt={10}>
-                  <Text fontSize='2xl'>OPS! Parece que não há nada aqui </Text>
+                <Flex justifyContent={'center'} alignItems={'center'} mt={10} flexDirection={'column'}>
+                  <Text mb={10} fontSize='2xl'>OPS! Parece que não há nada no seu carrinho!</Text>
+                  <Lottie
+                    options={defaultOptions}
+                    height={200}
+                    width={300}
+                  />
+                  <Text mt={10} fontSize='1xl'>Continue comprando para que seus produtos apareçam aqui...</Text>
                 </Flex>
               }
               {productList.map((item) => (

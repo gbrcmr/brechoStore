@@ -146,7 +146,6 @@ const MobileNav = ({ onOpen, ...rest }) => {
   const [dataCart, setDataCart] = useState('')
   const { cart } = useAuth()
 
-  console.log('eaii', cart)
   return (
     <Flex
       ml={{ base: 0, md: 60 }}

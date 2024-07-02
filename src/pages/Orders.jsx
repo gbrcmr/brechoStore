@@ -113,7 +113,8 @@ export const Orders = () => {
   const getOrders = async () => {
     try {
       if (user) {
-        const response = await api.get(`/order/${user.id}`);
+        console.log('SSSSSSSSSSS', user)
+        const response = await api.get(`/order/${user[0].userid}`);
         const orders = response.data;
 
 
@@ -143,31 +144,23 @@ export const Orders = () => {
 
 
 
-  const redirectAndSendEmail = async (pedidoid) => {
+  const redirectOrder = async (pedidoid) => {
     try {
-      const response = await api.post('/send', {
-        toEmail: user.email,
-        emailBody: '<h1>Atualização do seu pedido! Aguardando pagamento</h1>' // Corpo HTML do email
-      });
-
-      console.log(response.data);
-
       navigate(`/checkout/payment/${pedidoid}`);
-      return response.data;
 
     } catch (error) {
-      console.error('Erro ao enviar email:', error);
+      console.error('Erro ao redirecionar:', error);
 
     }
   };
 
   useEffect(() => {
-    if (user !== null) {
+    if (user) {
       getOrders();
     }
   }, [user]);
 
-  if (user == null) {
+  if (!user) {
     return null;
   }
 
@@ -200,7 +193,7 @@ export const Orders = () => {
                   </Td>
                   <Td><Center>{formatDate(order.data_ped)}</Center></Td>
                   <Td isNumeric><Center>{formatValue(parseFloat(order.valor_ped) + 15.00)}</Center></Td>
-                  <Td bg={orderStatuses[order.pedidoid] === 'CONCLUIDA' ? 'green.100' : orderStatuses[order.pedidoid] === 'CANCELADO' ? 'red.500' : 'yellow.100'}><Center><Link onClick={() => redirectAndSendEmail(order.pedidoid)}>{orderStatuses[order.pedidoid] || 'Carregando...'}</Link></Center></Td>
+                  <Td bg={orderStatuses[order.pedidoid] === 'CONCLUIDA' ? 'green.100' : orderStatuses[order.pedidoid] === 'CANCELADO' ? 'red.500' : 'yellow.100'}><Center><Link onClick={() => redirectOrder(order.pedidoid)}>{orderStatuses[order.pedidoid] || 'Carregando...'}</Link></Center></Td>
                 </Tr>
               ))}
             </Tbody>

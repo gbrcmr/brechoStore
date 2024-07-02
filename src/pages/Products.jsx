@@ -14,9 +14,7 @@ export const Products = () => {
     const [dataStore, setDataStore] = useState();
     const [dataCart, setDataCart] = useState();
     const [hasAdd, setHasAdd] = useState(false);
-    const { cart, setCart } = useAuth();
-
-    console.log(`oieee`, cart)
+    const { cart, setCart, user } = useAuth();
 
     var url = window.location.href;
     var urlParts = url.split('/');
@@ -108,14 +106,45 @@ export const Products = () => {
         isClosable: true,
     })
 
+    const showAlertWarning = () => toast({
+        position: 'bottom-left',
+        title: 'Erro ao adicionar produto ao carrinho',
+        description: "Não é possivel adicionar produtos de lojas diferentes no carrinho",
+        status: 'warning',
+        duration: 5000,
+        isClosable: true,
+    })
+
+    const addStoreId = async (id, idUser) => {
+        try {
+            console.log('NEXTEL', user[0].lojaid_carrinho)
+            if (user[0].lojaid_carrinho === null) {
+                addToCart(id, idUser)
+                await api.put(`/cart/register/${idUser}/${storeId}`);
+                return
+            } if (user[0].lojaid_carrinho !== storeId) {
+                showAlertWarning()
+                return
+            } else {
+                addToCart(id, idUser)
+                return
+            }
+        } catch (error) {
+            console.log('ERROOOO')
+        }
+
+    }
+
 
     const addToCart = async (prodid, userid) => {
         try {
             console.log('add to cart: ', prodid)
             const response = await api.put(`/cart/add/${userid}/${prodid}`);
+            console.log('MOORGAN', dataCart)
 
             console.log('CCCCCCCCCCCCCCCCCCC', response.data.carrinho)
             if (dataCart === undefined || null || []) {
+                addStoreId(userid)
                 setDataCart[response.data.carrinho]
             } else {
                 setDataCart(prevList => [...prevList, response.data.carrinho])
@@ -144,8 +173,9 @@ export const Products = () => {
             console.log('ÁAAAAAAA', id)
             let found = dataCart?.find((element) => element === id);
             if (found === undefined) {
-                console.log('deu boa')
-                addToCart(id, idUser)
+                console.log('deu boa', idUser)
+                addStoreId(id, idUser)
+
 
                 return
             } else {
@@ -155,7 +185,6 @@ export const Products = () => {
             console.log('ERROOOO')
             showAlertFaiulure()
         }
-        console.log('............', arrayProd)
 
     }
 
@@ -180,7 +209,7 @@ export const Products = () => {
                                 types={[`${product.tipo_prod}, ${product.tamanho_prod}`]}
                                 price={product.preco_prod}
                                 clickOnLink={() => handleCart(product.prodid)}
-                                instagram={dataStore.instagram}
+                                instagram={dataStore.instagram || ''}
                                 phone={dataStore.telefone_loja}
                             />
 

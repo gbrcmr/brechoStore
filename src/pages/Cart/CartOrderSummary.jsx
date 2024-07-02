@@ -255,7 +255,7 @@ export const CartOrderSummary = () => {
   const navigate = useNavigate();
   const [deliveryCost, setDeliveryCost] = useState(0);
   const [deliveryErrors, setDeliveryErrors] = useState({});
-  const { cart } = useAuth();
+  const { cart, user } = useAuth();
 
   console.log('CARRINHOO', cart)
 
@@ -265,7 +265,7 @@ export const CartOrderSummary = () => {
 
   const cleanCart = async (userid) => {
     try {
-      const response = await api.put(`/cart/remove/${userid}`);
+      await api.put(`/cart/remove/${userid}`);
 
 
     } catch (error) {
@@ -274,26 +274,58 @@ export const CartOrderSummary = () => {
     }
   }
 
+  const redirectAndSendEmail = async (pedidoid) => {
+    try {
+      const response = await api.post('/send', {
+        toEmail: user[0].email,
+        emailBody: '<h1>Atualização do seu pedido! Aguardando pagamento</h1>' // Corpo HTML do email
+      });
+
+      console.log(response.data);
+
+      navigate(`/checkout/payment/${pedidoid}`);
+      return response.data;
+
+    } catch (error) {
+      console.error('Erro ao enviar email:', error);
+
+    }
+  };
+
 
   const hideProduct = async (prodid, desativado) => {
 
     try {
       console.log('MAMAMAMA', prodid)
-      const response = await api.put(`/product/hide/${prodid}/${desativado}`);
+      await api.put(`/product/hide/${prodid}/${desativado}`);
 
     } catch (error) {
       console.error('Erro em esconder produto:', error);
     }
   };
 
+  const clearStoreId = async (id) => {
+
+    try {
+      console.log('PAULADA', id)
+      await api.delete(`/cart/register/remove/${id}`);
+
+    } catch (error) {
+      console.error('Erro em apagar id loja:', error);
+    }
+  };
+
   useEffect(() => {
-    console.log('BATEBATEBATE')
+    console.log('BATEBATEBATE', cart)
+    if (cart === 0) {
+      clearStoreId(idUser)
+    }
   }, [cart]);
 
 
   console.log('JUVENTUDE', productList)
 
-  const createOrder = async (pedidoid, data_ped, valor_ped, nome_prod, userid, prodids) => {
+  const createOrder = async (pedidoid, data_ped, valor_ped, nome_prod, userid, prodids, lojaid) => {
     try {
 
       cleanCart(userid)
@@ -304,9 +336,12 @@ export const CartOrderSummary = () => {
         valor_ped,
         nome_prod,
         userid,
-        prodids
+        prodids,
+        lojaid
       });
       const data = await response.data;
+      console.log('oiee', data.pedidoid)
+      await redirectAndSendEmail(data.pedidoid)
       console.log('Order created:', data);
     } catch (error) {
       console.error('Error creating order:', error);
@@ -330,9 +365,9 @@ export const CartOrderSummary = () => {
         valorPago: (parseFloat(totalPrice) + deliveryCost).toFixed(2)
       });
       const data = await response.data;
-      await createOrder(data.txid, data.loc.criacao, formattedValue, productNamesArray, idUser, productidsArray);
+      await createOrder(data.txid, data.loc.criacao, formattedValue, productNamesArray, idUser, productidsArray, user[0].lojaid_carrinho);
       productNamesArray.map(product => product);
-      navigate(`/checkout/payment/${data.txid}`);
+      //navigate(`/checkout/payment/${data.txid}`);
     } catch (error) {
       console.error('Error creating Pix charge:', error);
     }

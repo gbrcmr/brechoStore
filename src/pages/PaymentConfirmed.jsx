@@ -6,6 +6,8 @@ import { Grid, GridItem, Center, Flex, Spacer, Link, Text, Image, Spinner } from
 import api from "../services/api"
 import { useEffect, useState } from "react"
 import { CheckCircleIcon } from "@chakra-ui/icons"
+import Lottie from 'react-lottie'
+import animationData from '../assets/payment.json'
 
 export const PaymentConfirmed = () => {
 
@@ -63,24 +65,34 @@ export const PaymentConfirmed = () => {
         }
     }, [loc, pixImagem]);
 
+
+
+    const defaultOptions = {
+        loop: true,
+        autoplay: true,
+        animationData: animationData,
+        rendererSettings: {
+            preserveAspectRatio: "xMidYMid slice"
+        }
+    };
+
     return (
         <>
             <SidebarWithHeader>
                 <Grid>
-                    <Center mb={5} fontWeight={700}>PEDIDO PAGO!</Center>
-                    {loading &&
-                        <Flex justifyContent={'center'} wrap={'wrap'}>
-                            <Spinner color="green" size={'xl'} />
-                        </Flex>
-                    }
-                    {!loading &&
-                        <Flex justifyContent={'center'} wrap={'wrap'}>
-                            <Flex direction={"column"}>
-                                <CheckCircleIcon boxSize={26} />
-                                <Text mt={5} maxWidth={300}>{pixTexto}</Text>
-                            </Flex>
-                        </Flex>
-                    }
+                    <Center fontWeight={700}>PEDIDO PAGO!</Center>
+
+
+                    <Flex justifyContent={'center'} alignItems={'center'} flexDirection={'column'}>
+                        <Lottie
+                            options={defaultOptions}
+                            height={500}
+                            width={500}
+                        />
+                        <Text justifyContent={'center'}>Seu pedido foi pago com sucesso! Agora é só aguardar a entrega!</Text>
+                    </Flex>
+
+
                 </Grid>
             </SidebarWithHeader >
         </>
